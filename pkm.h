@@ -13,7 +13,7 @@
     }pokemon;
 
     typedef struct{
-        int * nextpkm;
+        pokemon * nextpkm;
     }treinador;
 
 #endif
