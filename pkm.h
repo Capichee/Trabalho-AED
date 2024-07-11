@@ -1,15 +1,10 @@
-#ifndef pkm_h
-#define pkm_h
+#ifndef trabalho_h
+#define trabalho_h
 
     //Pokémon//
 
     typedef struct{
-        int vida;
-        int exp;
-        int status;
-        int atk;
-        int def;
-        int vel;
+        int vida, exp, status, atk, def, vel;
     }pokemon;
 
     typedef struct{
