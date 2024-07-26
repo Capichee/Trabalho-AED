@@ -17,11 +17,11 @@ typedef struct Pokemon {
     string nome, tipo1, tipo2;
     int hp, hpmax;
     moves ATKs;
-    Pokemon * next;
 } pokemon;
 
 typedef struct Treinador {
-    pokemon * caughtPkm;
+    pokemon caughtPkm;
+    Treinador * nextPkm;
     int count;
 } treinador;
 
