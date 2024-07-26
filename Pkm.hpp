@@ -14,7 +14,7 @@ typedef struct Moves {
 typedef struct Pokemon {
     int lvl, exp, atk, def, vel;
     bool isdualtype;
-    string nome, tipo1, tipo2;
+    string nomePKM, tipo1, tipo2;
     int hp, hpmax;
     moves ATKs;
 } pokemon;
