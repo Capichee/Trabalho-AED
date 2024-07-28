@@ -78,8 +78,6 @@ int main() {
     cout << "Agora, você está pronto para começar sua jornada! Boa sorte!" << endl;
     limpa_dialogo();
 
-    cout << t->caughtPkm.ATKs.move;
-
     inicia_batalha(t, oponente, m);
 
  while (oponente != nullptr) {
