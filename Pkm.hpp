@@ -1,40 +1,58 @@
 #ifndef PKM_HPP
 #define PKM_HPP
-
 #include <string>
 
 using namespace std;
 
-typedef struct Moves {
-    string move1, move2, move3, move4;
-    int power1, power2, power3, power4;
-    int acc1, acc2, acc3, acc4;
-} moves;
+struct moves {
+    string move;
+    int power;
+    int acc;
+    int pp;
+    string type;
+    int moveIndex;
+    moves* nextMove;
+};
 
-typedef struct Pokemon {
-    int lvl, exp, atk, def, vel;
+struct Pokemon {
+    string nomePKM;
+    string tipo1;
+    string tipo2;
+    int lvl;
+    int exp;
+    int atk;
+    int def;
+    int vel;
+    int hp;
+    int hpmax;
     bool isdualtype;
-    string nomePKM, tipo1, tipo2;
-    int hp, hpmax;
     moves ATKs;
-} pokemon;
+};
 
-typedef struct Treinador {
-    pokemon caughtPkm;
-    Treinador * nextPkm;
+struct treinador {
+    Pokemon caughtPkm;
     int count;
-} treinador;
+    treinador* nextPkm;
+};
 
-typedef struct Mochila {
+struct mochila {
     string nome;
     int pokebolas;
-    float dinheiro;
-} mochila;
+    double dinheiro;
+};
 
-mochila * mochila_introducao(const string& Nome);
-
+mochila* mochila_introducao(const string& Nome);
 void limpa_dialogo();
+void registra_pokemon(treinador* t);
+void registra_move(moves* m, const string& move, int power, int acc, int pp, const string& type);
+void banco_pokemon(treinador* t);
+bool verifica_super(treinador* t, treinador* oponente);
+bool pokemon_move(int ataque, treinador* t);
+bool captura_pokemon(treinador* t, const Pokemon& wildPkm);
+bool pokemon_acc(int ataque, treinador* t);
+void inicializa_pokemon(treinador* t, const string& nome, const string& tipo1, const string& tipo2, int lvl, int exp, int atk, int def, int vel, int hp, int hpmax);
+void inicia_batalha(treinador* t, treinador* oponente, mochila* m);
+void delete_pokemon(Pokemon& pkm);
+void copy_pokemon(Pokemon& dest, const Pokemon& src);
 
-void escolha_pokemon(int escolha, treinador * t);
-
-#endif
+#endif // PKM_HPP
