@@ -242,11 +242,21 @@ int calculate_damage(treinador * t, treinador * oponente, int move_power, bool i
     return dano;
 }
 
+void display_pokemon(treinador * oponente, treinador * t){
+    cout << "Seu " << t->caughtPkm.nomePKM << " está em campo!" << endl;
+    cout << "HP: " << t->caughtPkm.hp << "/" << t->caughtPkm.hpmax << endl;
+    cout << "O " << oponente->caughtPkm.nomePKM << " inimigo está em campo!" << endl;
+    cout << "HP: " << oponente->caughtPkm.hp << "/" << oponente->caughtPkm.hpmax << endl;
+}
+
 void inicia_batalha(treinador * t, treinador * oponente, mochila * m){
     cout << "Você encontrou um(a) " << oponente->caughtPkm.nomePKM << " selvagem!" << endl;
+    cout << m->nome << " envia " << t->caughtPkm.nomePKM << " para a batalha!" << endl;
     limpa_dialogo();
     int escolha = 10;
     while(escolha != 3){
+        display_pokemon(oponente, t);
+        limpa_dialogo();
         cout << "O que você deseja fazer?" << endl;
         cout << "1 - Lutar" << "     " << "2 - Capturar" << "     " << "3 - Fugir " << endl;
         int se_super = 1;
@@ -255,13 +265,13 @@ void inicia_batalha(treinador * t, treinador * oponente, mochila * m){
         limpa_dialogo();
         switch(escolha){
             case 1: {
-                cout << "Ataques: " << "1 - " << t->caughtPkm.ATKs.move;
+                cout << "Ataques: " << "1 - " << t->caughtPkm.ATKs.move << endl;
                 if (t->caughtPkm.ATKs.nextMove != NULL) {
-                    cout << " 2 - " << t->caughtPkm.ATKs.nextMove->move;
+                    cout << "2 - " << t->caughtPkm.ATKs.nextMove->move << endl;
                     if (t->caughtPkm.ATKs.nextMove->nextMove != NULL) {
-                        cout << " 3 - " << t->caughtPkm.ATKs.nextMove->nextMove->move;
+                        cout << "3 - " << t->caughtPkm.ATKs.nextMove->nextMove->move << endl;
                         if (t->caughtPkm.ATKs.nextMove->nextMove->nextMove != NULL) {
-                            cout << " 4 - " << t->caughtPkm.ATKs.nextMove->nextMove->nextMove->move;
+                            cout << "4 - " << t->caughtPkm.ATKs.nextMove->nextMove->nextMove->move;
                         }
                     }
                 }
