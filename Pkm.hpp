@@ -54,5 +54,6 @@ void inicializa_pokemon(treinador* t, const string& nome, const string& tipo1, c
 void inicia_batalha(treinador* t, treinador* oponente, mochila* m);
 void delete_pokemon(Pokemon& pkm);
 void copy_pokemon(Pokemon& dest, const Pokemon& src);
+int calculate_damage(treinador * t, treinador * oponente, int move_power, bool is_super_effective);
 
 #endif // PKM_HPP
