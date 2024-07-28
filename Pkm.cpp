@@ -198,9 +198,9 @@ bool pokemon_acc(int ataque, treinador* t) {
         m = m->nextMove;
     }
     if (m->acc > rand() % 100) {
-        return true;
+        return false;
     }
-    return false;
+    return true;
 }
 
 void inicializa_pokemon(treinador* t, const std::string& nome, const std::string& tipo1, const std::string& tipo2, int lvl, int exp, int atk, int def, int vel, int hp, int hpmax) {
@@ -217,6 +217,29 @@ void inicializa_pokemon(treinador* t, const std::string& nome, const std::string
     t->caughtPkm.hpmax = hpmax;
     t->caughtPkm.ATKs.moveIndex = 0;
     t->caughtPkm.ATKs.nextMove = NULL;
+}
+
+int calculate_damage(treinador * t, treinador * oponente, int move_power, bool is_super_effective){
+    srand(time(0));
+
+    int level = (2 * t->caughtPkm.lvl) / 5 + 2;
+    int base_damage = (((level * move_power * t->caughtPkm.atk) / oponente->caughtPkm.def) / 50) + 2;
+
+    float modifier = 1.0;
+
+    if (rand() % 16 == 0) {
+        modifier *= 1.5;
+        cout << "A critical hit!" << endl;
+    }
+
+    modifier *= (rand() % 16 + 85) / 100.0;
+
+    if (is_super_effective) {
+        modifier *= 2.0;
+    }
+
+    int dano = base_damage * modifier;
+    return dano;
 }
 
 void inicia_batalha(treinador * t, treinador * oponente, mochila * m){
@@ -247,27 +270,18 @@ void inicia_batalha(treinador * t, treinador * oponente, mochila * m){
                 cin >> ataque;
                 limpa_dialogo();
                 
-                if(verifica_super(t, oponente)){
-                    se_super = 2;
-                }
+                bool is_super_effective = verifica_super(t, oponente);
+                int move_power = t->caughtPkm.ATKs.power;
 
-                if(pokemon_acc(ataque, t)){
-                    cout << "Ataque acertou!" << endl;
-                    limpa_dialogo();
-                } else {
-                    cout << "Ataque errou!" << endl;
-                    limpa_dialogo();
-                    break;
-                }
-
-                dano = (((((2*t->caughtPkm.lvl)/5) * (pokemon_move(ataque, t))/(oponente->caughtPkm.def))+2)/50) * se_super;
-                
+                int dano = calculate_damage(t, oponente, move_power, is_super_effective);
                 oponente->caughtPkm.hp -= dano;
                 cout << "Você causou " << dano << " de dano!" << endl;
-                if(oponente->caughtPkm.hp <= 0){
+
+                if (oponente->caughtPkm.hp <= 0) {
                     cout << "Você venceu!" << endl;
                     return;
                 }
+                break;
             }
             case 2: {
                 cout << "Você escolheu capturar!" << endl;
@@ -284,16 +298,14 @@ void inicia_batalha(treinador * t, treinador * oponente, mochila * m){
                     captura_pokemon(t, oponente->caughtPkm);
                     return;
                 } else {
-                    cout << "O pokemon selvagem escapou da pokebola!" << endl;
-                    limpa_dialogo();
-                    escolha = 10;
+                    cout << "A captura falhou!" << endl;
                 }
                 break;
             }
             case 3: {
                 cout << "Você escolheu fugir!" << endl;
                 limpa_dialogo();
-                if(rand()%100 < 50){
+                if(rand()%100 < 75){
                     cout << "Você fugiu!" << endl;
                     limpa_dialogo();
                     return;
