@@ -79,28 +79,58 @@ int main() {
     cout << "Agora, você está pronto para começar sua jornada! Boa sorte!" << endl;
     limpa_dialogo();
 
-    inicia_batalha(t, oponente, m);
-
     cout << "Aperte z para acessar o menu de opções." << endl;
     cin >> escolha_menu;
     limpa_dialogo();
 
-while(escolha_menu == 'z') {
-    if(escolha_menu == 'z') {
+while(escolha_menu == 'z' || 'Z') {
+    if(escolha_menu == 'z' || 'Z') {
         cout << "1 - Trocar Pokémon" << endl;
         cout << "2 - Comprar na loja." << endl;
+        cout << "3 - Usar poções." << endl;
+        cout << "4 - Entrar em batalha." << endl;
         cin >> escolha;
-        if(escolha == 1){
-            cout << "Trocar o primeiro pokemon com qual outro de sua equipe?" << endl;
-            cin >> escolha_dentro;
-            troca_equipe(t, escolha_dentro);
-            system("clear");
-            cout << t->caughtPkm.nomePKM << " agora é o líder da equipe!" << endl;
-            escolha_menu == 'l';
-        }
-        else if(escolha == 2){
-            loja(m);
-            escolha_menu == 'l';
+        system("clear");
+        switch(escolha){
+            case 1:{
+                cout << "Trocar o primeiro pokemon com qual outro de sua equipe?" << endl;
+                display_equipe(t, 0);
+                cin >> escolha_dentro;
+                troca_equipe(t, escolha_dentro);
+                system("clear");
+                cout << t->caughtPkm.nomePKM << " agora é o líder da equipe!" << endl;
+                escolha_menu == 'l';
+                break;
+            }
+            case 2:{
+                loja(m);
+                escolha_menu == 'l';
+                break;
+            }
+            case 3:{
+                cout << "Você tem " << m->pocao << " poções. Deseja usar uma?" << endl;
+                cout << "1 - Sim" << endl;
+                cout << "2 - Não" << endl;
+                cin >> escolha;
+                if(escolha == 1){
+                    if(t->caughtPkm.hp < t->caughtPkm.hpmax){
+                        t->caughtPkm.hp += 20;
+                        m->pocao--;
+                        cout << "Você usou uma poção e recuperou 20 de HP!" << endl;
+                    } else {
+                        cout << "Seu Pokémon já está com HP máximo!" << endl;
+                    }
+                } else {
+                    cout << "Você não usou a poção." << endl;
+                }
+                escolha_menu == 'l';
+                break;
+            }
+            case 4:{
+                inicia_batalha(t, oponente, m);
+                escolha_menu == 'l';
+                break;
+            }
         }
         cout << "Aperte z para acessar o menu de opções. E qualquer outra tecla pra sair." << endl;
         cin >> escolha_menu;
