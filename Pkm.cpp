@@ -11,6 +11,7 @@ mochila* mochila_introducao(const std::string& Nome) {
     m->nome = Nome;
     m->pokebolas = 10;
     m->dinheiro = 1000.0;
+    m->pocao = 0;
     return m;
 }
 
@@ -264,6 +265,15 @@ void troca_equipe(treinador* t, int n) {
     atual->caughtPkm = temp;
 }
 
+void display_equipe(treinador * t, int i){
+    if(t == NULL){
+        return;
+    }
+    i++;
+    cout << i << "- "<< t->caughtPkm.nomePKM << " " << endl;
+    display_equipe(t->nextPkm, i);
+}
+
 void loja(mochila * m){
     cout << "Bem-vindo(a) à loja!" << endl;
     cout << "Você tem R$ " << m->dinheiro << " e " << m->pokebolas << " pokebolas." << endl;
@@ -289,6 +299,7 @@ void loja(mochila * m){
             cout << "Quantas poções você deseja comprar?" << endl;
             int qtd;
             cin >> qtd;
+            m->pocao += qtd;
             limpa_dialogo();
             m->dinheiro -= qtd * 200;
             cout << "Você comprou " << qtd << " poções!" << endl;
@@ -311,10 +322,23 @@ int calculaXP(int lvl){
     return lvl;
 }
 
+int xpForNextLevel(int level) {
+    return level * level * level;
+}
+
+bool checkaLevelUp(int XP, int level, treinador * t) {
+    int nextLevelXP = xpForNextLevel(level);
+    if (XP >= nextLevelXP) {
+        t->caughtPkm.lvl++;
+        return true;
+    }
+    return false;
+}
+
 void display_pokemon(treinador * oponente, treinador * t){
-    cout << "Seu " << t->caughtPkm.nomePKM << " está em campo!" << endl;
+    cout << "Seu " << t->caughtPkm.nomePKM << "(lvl: " << t->caughtPkm.lvl << ")" << " está em campo!" << endl;
     cout << "HP: " << t->caughtPkm.hp << "/" << t->caughtPkm.hpmax << endl;
-    cout << "O " << oponente->caughtPkm.nomePKM << " inimigo está em campo!" << endl;
+    cout << "O " << oponente->caughtPkm.nomePKM << "(lvl: " << t->caughtPkm.lvl << ")" <<" inimigo está em campo!" << endl;
     cout << "HP: " << oponente->caughtPkm.hp << "/" << oponente->caughtPkm.hpmax << endl;
 }
 
@@ -323,11 +347,11 @@ void inicia_batalha(treinador * t, treinador * oponente, mochila * m){
     cout << m->nome << " envia " << t->caughtPkm.nomePKM << " para a batalha!" << endl;
     limpa_dialogo();
     int escolha = 10;
-    while(escolha != 3){
+    while(escolha != 4){
         display_pokemon(oponente, t);
         limpa_dialogo();
         cout << "O que você deseja fazer?" << endl;
-        cout << "1 - Lutar" << "     " << "2 - Capturar" << "     " << "3 - Fugir " << endl;
+        cout << "1 - Lutar     " << "2 - Capturar     " << "3 - Trocar de pokemon     " << "4 - Fugir" << endl;
         int se_super = 1;
         int dano;
         cin >> escolha;
@@ -345,7 +369,8 @@ void inicia_batalha(treinador * t, treinador * oponente, mochila * m){
                     }
                 }
                 cout << endl;
-                int ataque;
+                int ataque, ataque_oponente;
+
                 cin >> ataque;
                 limpa_dialogo();
                 
@@ -363,11 +388,34 @@ void inicia_batalha(treinador * t, treinador * oponente, mochila * m){
                     exp = calculaXP(oponente->caughtPkm.lvl);
                     cout << "Seu pokemon ganhou " << exp << " de experiência!" << endl;
                     t->caughtPkm.exp += exp;
+                    checkaLevelUp(t->caughtPkm.exp, t->caughtPkm.lvl, t);
                     float dimdim;
                     dimdim = rand()%100;
                     cout << "Você achou R$ " << dimdim << " no chão!" << endl;
                     m->dinheiro += dimdim;
                     limpa_dialogo();
+                    return;
+                }
+
+                ataque_oponente = rand()%4 + 1;
+                is_super_effective = verifica_super(oponente, t);
+                move_power = oponente->caughtPkm.ATKs.power;
+                dano = calculate_damage(oponente, t, move_power, is_super_effective);
+                t->caughtPkm.hp -= dano;
+                cout << "O " << oponente->caughtPkm.nomePKM << " inimigo causou " << dano << " de dano!" << endl;
+                if(t->caughtPkm.hp <= 0){
+                    cout << t->caughtPkm.nomePKM << " desmaiou!" << endl;
+                    limpa_dialogo();
+                    if(t->nextPkm == NULL){
+                        cout << "Você perdeu!" << endl;
+                        limpa_dialogo();
+                        return;
+                    }
+                    cout << "Escolha um pokemon para substituir!" << endl;
+                    int escolha_dentro;
+                    cin >> escolha_dentro;
+                    limpa_dialogo();
+                    troca_equipe(t, escolha_dentro);
                     return;
                 }
                 break;
@@ -392,7 +440,17 @@ void inicia_batalha(treinador * t, treinador * oponente, mochila * m){
                 }
                 break;
             }
-            case 3: {
+            case 3:{
+                int escolha_dentro;
+                cout << "Trocar o primeiro pokemon com qual outro de sua equipe?" << endl;
+                display_equipe(t, 0);
+                cin >> escolha_dentro;
+                troca_equipe(t, escolha_dentro);
+                limpa_dialogo();
+                cout << t->caughtPkm.nomePKM << " agora é o líder da equipe!" << endl;
+                break;
+            }
+            case 4: {
                 cout << "Você escolheu fugir!" << endl;
                 limpa_dialogo();
                 if(rand()%100 < 75){
