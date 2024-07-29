@@ -10,7 +10,8 @@ int main() {
     mochila* m;
     treinador* t;
     treinador* oponente;
-    int escolha = 0;
+    int escolha = 0, escolha_dentro = 0;
+    char escolha_menu;
 
     oponente = (treinador*)malloc(sizeof(treinador));
     oponente->nextPkm = nullptr;
@@ -79,6 +80,32 @@ int main() {
     limpa_dialogo();
 
     inicia_batalha(t, oponente, m);
+
+    cout << "Aperte z para acessar o menu de opções." << endl;
+    cin >> escolha_menu;
+    limpa_dialogo();
+
+while(escolha_menu == 'z') {
+    if(escolha_menu == 'z') {
+        cout << "1 - Trocar Pokémon" << endl;
+        cout << "2 - Comprar na loja." << endl;
+        cin >> escolha;
+        if(escolha == 1){
+            cout << "Trocar o primeiro pokemon com qual outro de sua equipe?" << endl;
+            cin >> escolha_dentro;
+            troca_equipe(t, escolha_dentro);
+            system("clear");
+            cout << t->caughtPkm.nomePKM << " agora é o líder da equipe!" << endl;
+            escolha_menu == 'l';
+        }
+        else if(escolha == 2){
+            loja(m);
+            escolha_menu == 'l';
+        }
+        cout << "Aperte z para acessar o menu de opções. E qualquer outra tecla pra sair." << endl;
+        cin >> escolha_menu;
+    }
+}
 
  while (oponente != nullptr) {
         delete_pokemon(oponente->caughtPkm);
