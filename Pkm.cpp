@@ -242,6 +242,75 @@ int calculate_damage(treinador * t, treinador * oponente, int move_power, bool i
     return dano;
 }
 
+void troca_equipe(treinador* t, int n) {
+    if (n <= 1) return;
+
+    treinador* head = t;
+    treinador* anterior = nullptr;
+    treinador* atual = t;
+
+    while (n > 1 && atual != nullptr) {
+        anterior = atual;
+        atual = anterior->nextPkm;
+        n--;
+    }
+
+    if (atual == nullptr){
+        return;
+    }
+    
+    Pokemon temp = head->caughtPkm;
+    head->caughtPkm = atual->caughtPkm;
+    atual->caughtPkm = temp;
+}
+
+void loja(mochila * m){
+    cout << "Bem-vindo(a) à loja!" << endl;
+    cout << "Você tem R$ " << m->dinheiro << " e " << m->pokebolas << " pokebolas." << endl;
+    cout << "1 - Comprar pokebolas" << endl;
+    cout << "2 - Comprar poções" << endl;
+    cout << "3 - Sair" << endl;
+    int escolha;
+    cin >> escolha;
+    limpa_dialogo();
+    switch(escolha){
+        case 1: {
+            cout << "Quantas pokebolas você deseja comprar?" << endl;
+            int qtd;
+            cin >> qtd;
+            limpa_dialogo();
+            m->pokebolas += qtd;
+            m->dinheiro -= qtd * 100;
+            cout << "Você comprou " << qtd << " pokebolas!" << endl;
+            cout << "R$" << m->dinheiro << endl;
+            break;
+        }
+        case 2: {
+            cout << "Quantas poções você deseja comprar?" << endl;
+            int qtd;
+            cin >> qtd;
+            limpa_dialogo();
+            m->dinheiro -= qtd * 200;
+            cout << "Você comprou " << qtd << " poções!" << endl;
+            break;
+        }
+        case 3: {
+            cout << "Você saiu da loja!" << endl;
+            break;
+        }
+        default: {
+            cout << "Escolha inválida!" << endl;
+            break;
+        }
+    }
+}
+
+int calculaXP(int lvl){
+    srand(time(0));
+    int xp = ((lvl * 30)/7) * (rand()%2 + 1);
+    return lvl;
+}
+
 void display_pokemon(treinador * oponente, treinador * t){
     cout << "Seu " << t->caughtPkm.nomePKM << " está em campo!" << endl;
     cout << "HP: " << t->caughtPkm.hp << "/" << t->caughtPkm.hpmax << endl;
@@ -289,6 +358,16 @@ void inicia_batalha(treinador * t, treinador * oponente, mochila * m){
 
                 if (oponente->caughtPkm.hp <= 0) {
                     cout << "Você venceu!" << endl;
+                    limpa_dialogo();
+                    int exp;
+                    exp = calculaXP(oponente->caughtPkm.lvl);
+                    cout << "Seu pokemon ganhou " << exp << " de experiência!" << endl;
+                    t->caughtPkm.exp += exp;
+                    float dimdim;
+                    dimdim = rand()%100;
+                    cout << "Você achou R$ " << dimdim << " no chão!" << endl;
+                    m->dinheiro += dimdim;
+                    limpa_dialogo();
                     return;
                 }
                 break;
@@ -305,6 +384,7 @@ void inicia_batalha(treinador * t, treinador * oponente, mochila * m){
                 }
                 if(rand()%100 < 50){
                     cout << "Você capturou o pokemon!" << endl;
+                    limpa_dialogo();
                     captura_pokemon(t, oponente->caughtPkm);
                     return;
                 } else {
