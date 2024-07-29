@@ -37,7 +37,7 @@ struct treinador {
 
 struct mochila {
     string nome;
-    int pokebolas;
+    int pokebolas, pocao;
     double dinheiro;
 };
 
@@ -58,5 +58,6 @@ int calculate_damage(treinador * t, treinador * oponente, int move_power, bool i
 void display_pokemon(treinador * oponente, treinador * t);
 void troca_equipe(treinador* t, int escolha_dentro);
 void loja(mochila * m);
+void display_equipe(treinador * t, int i);
 
 #endif // PKM_HPP
